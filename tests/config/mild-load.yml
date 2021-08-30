@@ -1,0 +1,8 @@
+config:
+  phases:
+    - duration: 5
+      arrivalRate: 1
+      name: Warm up
+    - duration: 10
+      arrivalRate: 1
+      name: Sustained load

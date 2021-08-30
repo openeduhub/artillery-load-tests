@@ -1,0 +1,60 @@
+config:
+  target: 'https://staging.wirlernenonline.de/relay/graphql'
+  payload:
+    path: '../data/search_strings.csv'
+    fields:
+      - 'search_strings'
+
+scenarios:
+  - name: 'Load page and search'
+    flow:
+      - post:
+          url: '/'
+          json:
+            [
+              {
+                'operationName': 'DidYouMeanSuggestion',
+                'variables': { 'searchString': '', 'filters': null, 'language': 'en' },
+                'query': "query DidYouMeanSuggestion($searchString: String!, $filters: [Filter!], $language: Language!) {\n  didYouMeanSuggestion(\n    searchString: $searchString\n    filters: $filters\n    language: $language\n  ) {\n    ...didYouMeanSuggestion\n    __typename\n  }\n}\n\nfragment didYouMeanSuggestion on DidYouMeanSuggestion {\n  plain\n  html\n  __typename\n}\n",
+              },
+              {
+                'operationName': 'Facets',
+                'variables': { 'searchString': '', 'filters': null, 'language': 'en' },
+                'query': "query Facets($searchString: String, $filters: [Filter!], $language: Language!) {\n  facets(\n    searchString: $searchString\n    size: 20\n    filters: $filters\n    language: $language\n    facets: [discipline, educationalContext, intendedEndUserRole, keyword, learningResourceType, source, type]\n  ) {\n    ...aggregation\n    __typename\n  }\n}\n\nfragment aggregation on Aggregation {\n  buckets {\n    doc_count\n    key\n    __typename\n  }\n  facet\n  total_buckets\n  __typename\n}\n",
+              },
+              {
+                'operationName': 'Search',
+                'variables':
+                  { 'from': 0, 'searchString': '', 'size': 12, 'filters': null, 'language': 'en' },
+                'query': "query Search($searchString: String!, $from: Int! = 0, $size: Int!, $filters: [Filter!], $language: Language) {\n  search(\n    searchString: $searchString\n    from: $from\n    size: $size\n    filters: $filters\n    language: $language\n  ) {\n    ...result\n    __typename\n  }\n}\n\nfragment result on SearchResult {\n  took\n  total {\n    value\n    relation\n    __typename\n  }\n  hits {\n    ...searchHit\n    __typename\n  }\n  __typename\n}\n\nfragment searchHit on Hit {\n  id\n  lom {\n    general {\n      title\n      keyword\n      description\n      language\n      __typename\n    }\n    technical {\n      location\n      duration\n      format\n      __typename\n    }\n    lifecycle {\n      contribute {\n        role\n        entity\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n  type\n  source {\n    name\n    url\n    __typename\n  }\n  license {\n    oer\n    displayName\n    __typename\n  }\n  editorialTags\n  previewImage {\n    thumbnail {\n      ... on EmbeddedThumbnail {\n        mimetype\n        image\n        __typename\n      }\n      ... on ExternalThumbnail {\n        url\n        __typename\n      }\n      __typename\n    }\n    url\n    __typename\n  }\n  skos {\n    discipline {\n      ...skosEntry\n      __typename\n    }\n    educationalContext {\n      ...skosEntry\n      __typename\n    }\n    learningResourceType {\n      ...skosEntry\n      __typename\n    }\n    conditionsOfAccess {\n      ...skosEntry\n      __typename\n    }\n    price {\n      ...skosEntry\n      __typename\n    }\n    widgets {\n      ...skosEntry\n      __typename\n    }\n    containsAdvertisement {\n      ...skosEntry\n      __typename\n    }\n    __typename\n  }\n  misc {\n    author\n    isExternal\n    __typename\n  }\n  __typename\n}\n\nfragment skosEntry on SkosEntry {\n  id\n  label\n  __typename\n}\n",
+              },
+            ]
+      - post:
+          url: '/'
+          json:
+            [
+              {
+                'operationName': 'DidYouMeanSuggestion',
+                'variables':
+                  { 'searchString': '{{ search_strings }}', 'filters': null, 'language': 'en' },
+                'query': "query DidYouMeanSuggestion($searchString: String!, $filters: [Filter!], $language: Language!) {\n  didYouMeanSuggestion(\n    searchString: $searchString\n    filters: $filters\n    language: $language\n  ) {\n    ...didYouMeanSuggestion\n    __typename\n  }\n}\n\nfragment didYouMeanSuggestion on DidYouMeanSuggestion {\n  plain\n  html\n  __typename\n}\n",
+              },
+              {
+                'operationName': 'Facets',
+                'variables':
+                  { 'searchString': '{{ search_strings }}', 'filters': null, 'language': 'en' },
+                'query': "query Facets($searchString: String, $filters: [Filter!], $language: Language!) {\n  facets(\n    searchString: $searchString\n    size: 20\n    filters: $filters\n    language: $language\n    facets: [discipline, educationalContext, intendedEndUserRole, keyword, learningResourceType, source, type]\n  ) {\n    ...aggregation\n    __typename\n  }\n}\n\nfragment aggregation on Aggregation {\n  buckets {\n    doc_count\n    key\n    __typename\n  }\n  facet\n  total_buckets\n  __typename\n}\n",
+              },
+              {
+                'operationName': 'Search',
+                'variables':
+                  {
+                    'from': 0,
+                    'searchString': '{{ search_strings }}',
+                    'size': 12,
+                    'filters': null,
+                    'language': 'en',
+                  },
+                'query': "query Search($searchString: String!, $from: Int! = 0, $size: Int!, $filters: [Filter!], $language: Language) {\n  search(\n    searchString: $searchString\n    from: $from\n    size: $size\n    filters: $filters\n    language: $language\n  ) {\n    ...result\n    __typename\n  }\n}\n\nfragment result on SearchResult {\n  took\n  total {\n    value\n    relation\n    __typename\n  }\n  hits {\n    ...searchHit\n    __typename\n  }\n  __typename\n}\n\nfragment searchHit on Hit {\n  id\n  lom {\n    general {\n      title\n      keyword\n      description\n      language\n      __typename\n    }\n    technical {\n      location\n      duration\n      format\n      __typename\n    }\n    lifecycle {\n      contribute {\n        role\n        entity\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n  type\n  source {\n    name\n    url\n    __typename\n  }\n  license {\n    oer\n    displayName\n    __typename\n  }\n  editorialTags\n  previewImage {\n    thumbnail {\n      ... on EmbeddedThumbnail {\n        mimetype\n        image\n        __typename\n      }\n      ... on ExternalThumbnail {\n        url\n        __typename\n      }\n      __typename\n    }\n    url\n    __typename\n  }\n  skos {\n    discipline {\n      ...skosEntry\n      __typename\n    }\n    educationalContext {\n      ...skosEntry\n      __typename\n    }\n    learningResourceType {\n      ...skosEntry\n      __typename\n    }\n    conditionsOfAccess {\n      ...skosEntry\n      __typename\n    }\n    price {\n      ...skosEntry\n      __typename\n    }\n    widgets {\n      ...skosEntry\n      __typename\n    }\n    containsAdvertisement {\n      ...skosEntry\n      __typename\n    }\n    __typename\n  }\n  misc {\n    author\n    isExternal\n    __typename\n  }\n  __typename\n}\n\nfragment skosEntry on SkosEntry {\n  id\n  label\n  __typename\n}\n",
+              },
+            ]
