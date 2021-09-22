@@ -15,12 +15,36 @@ scenarios:
   - name: 'Load page and search'
     flow:
       - post:
-          url: '/search/v1/queriesV2/local/mds_oeh/ngsearch/?contentType=FILES&skipCount=0&maxItems=25&sortProperties=score&sortProperties=cm%3Amodified&sortAscending=false&sortAscending=false&propertyFilter=-all-&'
-          json: { 'criterias': [], 'facettes': ['ccm:educationalcontext', 'cclom:general_keyword'] }
+          url: '/search/v1/queriesV2/local/mds_oeh/ngsearch?contentType=FILES&maxItems=12&skipCount=0&sortProperties=score&sortProperties=cm%3Amodified&sortAscending=false&sortAscending=false&propertyFilter=-all-'
+          json:
+            {
+              'criterias': [],
+              'facettes':
+                [
+                  'ccm:replicationsource',
+                  'cclom:general_keyword',
+                  'ccm:taxonid',
+                  'ccm:educationalcontext',
+                  'ccm:educationallearningresourcetype',
+                  'ccm:educationalintendedenduserrole',
+                  'ccm:objecttype',
+                ],
+              'resolveCollections': true,
+            }
       - post:
-          url: '/search/v1/queriesV2/local/mds_oeh/ngsearch/?contentType=FILES&skipCount=0&maxItems=25&sortProperties=score&sortProperties=cm%3Amodified&sortAscending=false&sortAscending=false&propertyFilter=-all-&'
+          url: '/search/v1/queriesV2/local/mds_oeh/ngsearch?contentType=FILES&maxItems=12&skipCount=0&sortProperties=score&sortProperties=cm%3Amodified&sortAscending=false&sortAscending=false&propertyFilter=-all-'
           json:
             {
               'criterias': [{ 'property': 'ngsearchword', 'values': ['{{ search_strings }}'] }],
-              'facettes': ['ccm:educationalcontext', 'cclom:general_keyword'],
+              'facettes':
+                [
+                  'ccm:replicationsource',
+                  'cclom:general_keyword',
+                  'ccm:taxonid',
+                  'ccm:educationalcontext',
+                  'ccm:educationallearningresourcetype',
+                  'ccm:educationalintendedenduserrole',
+                  'ccm:objecttype',
+                ],
+              'resolveCollections': true,
             }
